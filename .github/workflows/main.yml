@@ -1,11 +1,37 @@
 name: Generate Podcast Feeds
-on: [push]
+on:
+  push:
+    branches:
+      - main  # Adjust the branch if necessary
+
 jobs:
   build:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]  # Define the matrix of operating systems
+
+    runs-on: ${{ matrix.os }}  # Use the operating system defined in the matrix
+
     steps:
-       - name: Checkout Repo
-         uses: actions/checkout@v3
-       - name: Run Feed Generator
-         uses: SUDEEP-M-SHETTY/podcast-generator@main
-       
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        if: matrix.os == 'windows-latest'  # Conditionally set up Python for Windows
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'  # Replace with your desired Python version
+
+      - name: Install dependencies
+        if: matrix.os == 'windows-latest'  # Conditionally install dependencies for Windows
+        run: |
+          python -m pip install --upgrade pip
+          pip install PyYAML  # Install PyYAML or specify dependencies as needed
+
+      - name: Install dependencies
+        if: matrix.os == 'ubuntu-latest'  # Conditionally install dependencies for Ubuntu
+        run: |
+          pip3 install PyYAML  # Install PyYAML or specify dependencies as needed
+
+      - name: Run Feed Generator
+        uses: SUDEEP-M-SHETTY/podcast-generator@main
