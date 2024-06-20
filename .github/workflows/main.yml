@@ -4,23 +4,34 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-       - name: Checkout Repo
-         uses: actions/checkout@v3
-       - name: Setup Python
-         uses: actions/setup-python@v4
-         with:
-           python-version: '3.10'
-       - name: Install Dependencies
-         run: |
-           python -m pip install --upgrade pip
-           pip install pyyaml
-       - name: Run Feed Generator
-         run: python feed.py
-       - name: Push Repo
-         run: |
-           git config user.name github-actions
-           git config user.email github-actions@github.com
-           git add .
-           git commit -m "Modified Feed"
-           git push origin main
-             
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml
+
+      - name: Run Feed Generator
+        run: |
+          python feed.py
+          # Add a command to check the output of feed.py (optional)
+          ls -l  # Replace with appropriate command to list files if on a non-Linux system
+
+      - name: Check Git Status
+        run: |
+          git status
+          git add -A  # Add all files to the Git index
+          git status  # Check status after adding files
+
+      - name: Commit and Push Changes
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git commit -m "Modified Feed"
+          git push
