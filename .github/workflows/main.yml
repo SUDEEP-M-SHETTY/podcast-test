@@ -20,18 +20,20 @@ jobs:
       - name: Run Feed Generator
         run: |
           python feed.py
-          # Add a command to check the output of feed.py (optional)
-          ls -l  # Replace with appropriate command to list files if on a non-Linux system
+          ls -l  # Check generated files (replace with appropriate command if not on Linux)
 
       - name: Check Git Status
         run: |
           git status
-          git add -A  # Add all files to the Git index
-          git status  # Check status after adding files
+          git add -A
+          git status  # Verify files are staged
 
-      - name: Commit and Push Changes
+      - name: Commit Changes
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git commit -m "Modified Feed"
+          git commit -m "Update podcast feeds"
+
+      - name: Push Changes
+        run: |
           git push
